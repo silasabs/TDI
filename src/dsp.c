@@ -10,6 +10,7 @@ Input:
     M (int): Ordem do esquema de modulação.
     Nbits (int): comprimento do bitstream
 Output: 
+    sequência de bits pseudo-aleatórios.
 */
 
 int *getRandomBits(int Nbits, int M) {
