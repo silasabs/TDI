@@ -51,3 +51,31 @@ int *getRandomBits(int Nbits) {
     }
     return bits;
 }
+
+int main() {
+
+    int tamanho = 3; // Tamanho da matriz
+
+    float complex* numeros = malloc(tamanho * sizeof(float complex));
+
+    // Preenche 'numeros' com os valores especificados
+
+    numeros[0] = 1.0 + 2.0 * I;
+
+    numeros[1] = 2.0 - 3.0 * I;
+
+    numeros[2] = -1.0 - 1.0 * I;
+
+    // Chama a função pnorm para normalizar a matriz
+
+    float complex* resultado = pnorm(numeros, tamanho);
+
+    for(int i = 0; i < tamanho; i++){
+
+        printf("%.2f + %.2fi\n", creal(resultado[i]), cimag(resultado[i]));
+
+    }
+
+    return 0;
+
+}
