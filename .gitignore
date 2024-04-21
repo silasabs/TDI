@@ -2,3 +2,5 @@
 
 # Jupyter files
 .ipynb_checkpoints
+# compilation files
+tempCodeRunnerFile.c
