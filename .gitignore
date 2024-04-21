@@ -1,5 +1,5 @@
 *.so
-
+*.out
 # Jupyter files
 .ipynb_checkpoints
 # compilation files
