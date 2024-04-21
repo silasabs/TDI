@@ -16,18 +16,15 @@ Output:
 float complex *pnorm(float complex* nums, int size) {
     // parameters
     float complex sum = 0;
-    float complex norm;
-    // normalized constellation
+    // normalized constellation matrix
     float complex *normalized_nums = (float complex*)malloc(size * sizeof(float complex));
     // calculate the average of the phasors
     for(int i = 0; i < size; i++) {
         sum += nums[i]*conj(nums[i]);
     }
-    // normalization parameter
-    norm = sqrt(creal(sum/size));
     // normalizes the QAM constellation
     for(int i = 0; i < size; i++) {
-        normalized_nums[i] = nums[i]/norm;
+        normalized_nums[i] = nums[i]/sqrt(creal(sum/size));
     }
     return normalized_nums;
 }
