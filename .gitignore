@@ -1,0 +1,4 @@
+*.so
+
+# Jupyter files
+.ipynb_checkpoints
