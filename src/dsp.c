@@ -10,12 +10,12 @@ Input:
     M (int): Ordem do esquema de modulação.
     Nbits (int): comprimento do bitstream
 Output: 
-    sequência de bits pseudo-aleatórios.
+    bits (int): sequência de bits pseudo-aleatórios.
 */
 
-int *getRandomBits(int Nbits, int M) {
+int *getRandomBits(int Nbits) {
 
-    int size = Nbits * log2(M);
+    int size = Nbits;
     int *bits = (int *)malloc(size * sizeof(int));
     // initialize the random number generator
     srand(time(NULL));
