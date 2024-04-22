@@ -5,12 +5,34 @@
 #include <complex.h>
 
 /*
+    Aumente a resolução de um sinal inserindo zeros entre as amostras.
+Input: 
+    sgnal (float complex): sinal de entrada para aumentar a resolução.
+    length (int): comprimento do sinal.
+    factor (int): fator de upsampling. O sinal será aumentado inserindo
+                  "factor - 1" zeros entre cada amostra original.
+Output: 
+    signalUp (float complex): o sinal ampliado com zeros inseridos entre as amostras.
+*/
+
+float complex *upsample(float complex* signal, int length, int factor) {
+    float complex *signalUp = (float complex*)malloc(length * factor * sizeof(float complex));
+    for(int i = 0; i < length; i++) {
+        signalUp[i*factor] = signal[i];
+        for(int j = 1; j < factor; j++) {
+            signalUp[i*factor+j] = 0;
+        }
+    }
+    return signalUp;
+}
+
+/*
     Normaliza a potência média de cada componente de nums.
 Input: 
     nums (float complex): fasores da constelação.
     size (int): comprimento do sinal
 Output: 
-    normalized_nums (float complex): Sinal com cada componente normalizado em potência.
+    normalized_nums (float complex): sinal com cada componente normalizado em potência.
 */
 
 float complex *pnorm(float complex* nums, int size) {
@@ -33,7 +55,7 @@ float complex *pnorm(float complex* nums, int size) {
     Implementa a geração de uma sequência de bits pseudo-aleatórios 
     que chegam ao transmissor.
 Input: 
-    M (int): Ordem do esquema de modulação.
+    M (int): ordem do esquema de modulação.
     Nbits (int): comprimento do bitstream
 Output: 
     bits (int): sequência de bits pseudo-aleatórios.
