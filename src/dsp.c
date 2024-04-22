@@ -7,12 +7,12 @@
 /*
     Aumente a resolução de um sinal inserindo zeros entre as amostras.
 Input: 
-    sgnal (float complex): sinal de entrada para aumentar a resolução.
+    signal (float complex): sinal de entrada para aumentar a resolução.
     length (int): comprimento do sinal.
     factor (int): fator de upsampling. O sinal será aumentado inserindo
                   "factor - 1" zeros entre cada amostra original.
 Output: 
-    signalUp (float complex): o sinal ampliado com zeros inseridos entre as amostras.
+    signalUp (float complex): apontador para um sinal ampliado com zeros inseridos entre as amostras.
 */
 
 float complex *upsample(float complex* signal, int length, int factor) {
