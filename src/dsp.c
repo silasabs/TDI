@@ -4,6 +4,22 @@
 #include <time.h>
 #include <complex.h>
 
+
+float *complex2float(float complex *arr, int length){
+    // Aloca espaço para a matriz de partes reais e imaginárias
+    float *separated_nums = (float *)malloc(2*length * sizeof(float));
+
+    separated_nums[0] = (float *)malloc(length * sizeof(float)); // Parte real
+    separated_nums[1] = (float *)malloc(length * sizeof(float)); // Parte imaginária
+
+    // Preenche a matriz com as partes reais e imaginárias
+    for(int i = 0; i < length; i++) {
+        separated_nums[0][i] = crealf(arr[i]); 
+        separated_nums[1][i] = cimagf(arr[i]); 
+    }
+    return separated_nums;
+}
+
 /*
     Aumente a resolução de um sinal inserindo zeros entre as amostras.
 Input: 
