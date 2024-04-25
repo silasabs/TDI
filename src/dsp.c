@@ -5,9 +5,9 @@
 #include <complex.h>
 
 
-float *complex2float(float complex *arr, int length){
+float **complex2float(float complex *arr, int length){
     // Aloca espaço para a matriz de partes reais e imaginárias
-    float *separated_nums = (float *)malloc(2*length * sizeof(float));
+    float **separated_nums = (float **)malloc(2*length * sizeof(float));
 
     separated_nums[0] = (float *)malloc(length * sizeof(float)); // Parte real
     separated_nums[1] = (float *)malloc(length * sizeof(float)); // Parte imaginária
