@@ -79,12 +79,11 @@ Output:
 
 int *getRandomBits(int Nbits) {
 
-    int size = Nbits;
-    int *bits = (int *)malloc(size * sizeof(int));
+    int *bits = (int *)malloc(Nbits * sizeof(int));
     // initialize the random number generator
     srand(time(NULL));
 
-    for(int indBits = 0; indBits < size; indBits++){
+    for(int indBits = 0; indBits < Nbits; indBits++){
         bits[indBits] = rand() % 2;
     }
     return bits;
