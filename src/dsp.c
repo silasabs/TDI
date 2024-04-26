@@ -4,7 +4,6 @@
 #include <time.h>
 #include <complex.h>
 
-
 float **complex2float(float complex *arr, int length){
     // Aloca espaço para a matriz de partes reais e imaginárias
     float **separated_nums = (float **)malloc(2*length * sizeof(float));
@@ -52,15 +51,14 @@ Output:
 */
 
 float complex *pnorm(float complex* nums, int size) {
-    // parameters
     float complex sum = 0;
-    // normalized constellation matrix
+    // matriz de constelação normalizada
     float complex *normalized_nums = (float complex*)malloc(size * sizeof(float complex));
-    // calculate the average of the phasors
+    // calcular a média dos fasores
     for(int i = 0; i < size; i++) {
         sum += nums[i]*conj(nums[i]);
     }
-    // normalizes the QAM constellation
+    // normaliza a constelação
     for(int i = 0; i < size; i++) {
         normalized_nums[i] = nums[i]/sqrt(creal(sum/size));
     }
@@ -78,7 +76,6 @@ Output:
 */
 
 int *getRandomBits(int Nbits) {
-
     int *bits = (int *)malloc(Nbits * sizeof(int));
     // initialize the random number generator
     srand(time(NULL));
@@ -88,3 +85,37 @@ int *getRandomBits(int Nbits) {
     }
     return bits;
 }
+
+// int main() {
+//     int size = 4; 
+
+//     float complex *nums = (float complex *)malloc(size * sizeof(float complex));
+    
+//     // Inicializa o vetor de números complexos (apenas para teste)
+//     for(int i = 0; i < size; i++) {
+//         nums[i] = i + 1 + I * (i + 2);
+//     }
+
+//     // Normaliza os números complexos
+//     float complex *normalized_nums = pnorm(nums, size);
+
+//     // Converte os números complexos normalizados para um vetor de partes reais e imaginárias
+//     float **float_nums = complex2float(normalized_nums, size);
+    
+//     // Imprime os resultados
+//     printf("Parte Real Normalizada:\n");
+//     for(int i = 0; i < size; i++) {
+//         printf("%f ", float_nums[0][i]);
+//     }
+//     printf("\nParte Imaginária Normalizada:\n");
+//     for(int i = 0; i < size; i++) {
+//         printf("%f ", float_nums[1][i]);
+//     }
+
+//     // Libera a memória alocada
+//     free(nums);
+//     free(normalized_nums);
+//     free(float_nums);
+    
+//     return 0;
+// }
