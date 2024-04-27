@@ -29,11 +29,10 @@ Output:
 */
 
 int *grayMapping(int bits[], int length){
-    // obtém a sequência em código gray
     int *gray = (int *)malloc(length * sizeof(int));
     // o primeiro bit e inalterado.
     gray[0] = bits[0];
-    
+    // obtém a sequência em código gray
     for(int i = 1; i < length; i++){
         gray[i] = bits[i-1] ^ bits[i];
     }
