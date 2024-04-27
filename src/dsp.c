@@ -20,6 +20,31 @@ float **complex2float(float complex *arr, int length){
 }
 
 /*
+    Leva uma sequência de bits aleatória para código gray.
+Input: 
+    bits (int): sequência de bits pseudo-aleatória.
+    length (int): comprimento do array.
+Output: 
+    gray (int): apontador para uma sequência mapeada em código gray.
+*/
+
+int *grayMapping(int bits[], int length){
+    // obtém a sequência em código gray
+    int *gray = (int *)malloc(length * sizeof(int));
+    // o primeiro bit e inalterado.
+    gray[0] = bits[0];
+    
+    for(int i = 1; i < length; i++){
+        gray[i] = bits[i-1] ^ bits[i];
+    }
+    return gray;
+}
+
+// float complex *qamMapper(int bits, int length){
+    
+// }
+
+/*
     Aumente a resolução de um sinal inserindo zeros entre as amostras.
 Input: 
     signal (float complex): sinal de entrada para aumentar a resolução.
@@ -86,6 +111,7 @@ int *getRandomBits(int Nbits) {
     return bits;
 }
 
+// testa pnorm e arrays de 2D
 // int main() {
 //     int size = 4; 
 
@@ -117,5 +143,28 @@ int *getRandomBits(int Nbits) {
 //     free(normalized_nums);
 //     free(float_nums);
     
+//     return 0;
+// }
+
+// testa codigo gray
+// int main(){
+//     int Nbits = 11;
+
+//     // Obtendo os bits aleatórios
+//     int *binary = getRandomBits(Nbits);
+    
+//     for (int i = 0; i < Nbits; i++) {
+//         printf("%d", binary[i]);
+//     }
+//     printf("\n");
+//     // Chamando a função para converter para código Gray
+//     int *graybin = grayMapping(binary, Nbits);
+//     for (int i = 0; i < Nbits; i++) {
+//         printf("%d", graybin[i]);
+//     }
+//     printf("\n");
+//     // Liberando a memória alocada para os bits
+//     free(binary);
+
 //     return 0;
 // }
