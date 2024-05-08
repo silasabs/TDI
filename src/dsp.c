@@ -4,6 +4,15 @@
 #include <time.h>
 #include <complex.h>
 
+// Define os símbolos da constelação 4QAM
+const float complex QAM4_symbols[4] = {
+    1.0 + 1.0*I, // 01
+    1.0 - 1.0*I, // 11
+   -1.0 + 1.0*I, // 00
+   -1.0 - 1.0*I  // 10
+};
+
+
 float **complex2float(float complex *arr, int length){
     // Aloca espaço para a matriz de partes reais e imaginárias
     float **separated_nums = (float **)malloc(2*length * sizeof(float));
@@ -39,10 +48,6 @@ int *grayMapping(int bits[], int length){
     return gray;
 }
 
-// float complex *qamMapper(int bits, int length){
-    
-// }
-
 /*
     Aumente a resolução de um sinal inserindo zeros entre as amostras.
 Input: 
@@ -64,6 +69,12 @@ float complex *upsample(float complex* signal, int length, int factor) {
     }
     return signalUp;
 }
+
+// complex float* qam4Mapper(int *bits, int length, int M) {
+    
+//     float complex *constl = (float complex*)malloc(length/log2(M) * sizeof(float complex));
+
+// }
 
 /*
     Normaliza a potência média de cada componente de nums.
@@ -108,6 +119,17 @@ int *getRandomBits(int Nbits) {
         bits[indBits] = rand() % 2;
     }
     return bits;
+}
+
+int main(){
+
+    // gera bits de forma aleatória.
+    int M = 4;
+    //int Nbits = 1000*log2(M);
+
+    int *bits = getRandomBits(4);
+    //float complex *result = qam4Mapper(bits, 4, M);
+    printf("%f", cimag(QAM4_symbols[0]));
 }
 
 // testa pnorm e arrays de 2D
