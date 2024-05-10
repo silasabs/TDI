@@ -135,45 +135,58 @@ int *getRandomBits(int Nbits) {
     return bits;
 }
 
-int main(){
-    // Vetor de bits de exemplo
-    int Nbits = 16;
-    int SpS   = 16;
-    // Obtendo os bits aleatórios
+float complex *mainUpSymbols(int Nbits, int SpS) {
+    // gera os bits de forma pseudo-aleatória
     int *Bits = getRandomBits(Nbits);
-    
-    for (int i = 0; i < Nbits; i++) {
-        printf("%d", Bits[i]);
-    }
-    printf("\n");
-
-    // Mapeia os bits para os símbolos da constelação 4QAM
+    // mapeia os bits para os símbolos da constelação 4-QAM
     float complex *symbTx = qam4Mapper(Bits, Nbits);
-
-    // Imprime os símbolos mapeados
-    printf("Símbolos mapeados para a constelação 4QAM:\n");
-    for (int i = 0; i < Nbits/2; i++) {
-       printf("%.1f + %.1fi\n", crealf(symbTx[i]), cimagf(symbTx[i]));
-    }
-    
-    // normaliza os simbolos mapeados para energia unitária
+    // normaliza os simbolos mapeados
     float complex *symbTxNorm = pnorm(symbTx, Nbits/2);
-
-    printf("Símbolos Normalizados:\n");
-    for (int i = 0; i < Nbits/2; i++) {
-       printf("%.4f + %.4fi\n", crealf(symbTxNorm[i]), cimagf(symbTxNorm[i]));
-    }
-
-    // Realiza o Upsampling
+    // upsampling
     float complex *symbolsUp = upsample(symbTxNorm, Nbits/2, SpS);
-
-    printf("Após Upsampling:\n");
-    for (int i = 0; i < Nbits/2*SpS; i++) {
-       printf("%.4f + %.4fi\n", crealf(symbolsUp[i]), cimagf(symbolsUp[i]));
-    }
-
-    return 0;
+    return symbolsUp;
 }
+
+
+// int main(){
+//     // Vetor de bits de exemplo
+//     int Nbits = 17*log2(4);
+//     int SpS   = 16;
+//     // Obtendo os bits aleatórios
+//     int *Bits = getRandomBits(Nbits);
+    
+//     for (int i = 0; i < Nbits; i++) {
+//         printf("%d", Bits[i]);
+//     }
+//     printf("\n");
+
+//     // Mapeia os bits para os símbolos da constelação 4QAM
+//     float complex *symbTx = qam4Mapper(Bits, Nbits);
+
+//     // Imprime os símbolos mapeados
+//     printf("Símbolos mapeados para a constelação 4QAM:\n");
+//     for (int i = 0; i < Nbits/2; i++) {
+//        printf("%.1f + %.1fi\n", crealf(symbTx[i]), cimagf(symbTx[i]));
+//     }
+    
+//     // normaliza os simbolos mapeados para energia unitária
+//     float complex *symbTxNorm = pnorm(symbTx, Nbits/2);
+
+//     printf("Símbolos Normalizados:\n");
+//     for (int i = 0; i < Nbits/2; i++) {
+//        printf("%.4f + %.4fi\n", crealf(symbTxNorm[i]), cimagf(symbTxNorm[i]));
+//     }
+
+//     // Realiza o Upsampling
+//     float complex *symbolsUp = upsample(symbTxNorm, Nbits/2, SpS);
+
+//     printf("Após Upsampling:\n");
+//     for (int i = 0; i < Nbits/2*SpS; i++) {
+//        printf("%.4f + %.4fi\n", crealf(symbolsUp[i]), cimagf(symbolsUp[i]));
+//     }
+
+//     return 0;
+// }
 
 // testa pnorm e arrays de 2D
 // int main() {
