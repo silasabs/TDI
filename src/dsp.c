@@ -12,9 +12,20 @@ const float complex QAM4_symbols[4] = {
    -1.0 - 1.0*I  // 10
 };
 
+/*
+    Mapeia uma sequência de bits para símbolos da constelação 4-QAM.
+Input: 
+    bits (int): sequência de bits pseudo-aleatória.
+    length (int): comprimento do array.
+Output: 
+    symbols (float complex): apontador para um vetor de símbolos mapeados.
+*/
+
 float complex *qam4Mapper(int *bits, int length) {
+    
     float complex *symbols = (float complex*)malloc(length * sizeof(float complex));
     int i, symbol_index = 0;
+    
     for (i = 0; i < length; i += 2) {
         
         int bit1 = bits[i];
@@ -134,6 +145,16 @@ int *getRandomBits(int Nbits) {
     }
     return bits;
 }
+
+/*
+    Função responsável pela simulação da geração de bits
+    modulação, normalização e upsampling.
+Input: 
+    SpS (int): amostras por símbolo.
+    Nbits (int): comprimento do bitstream
+Output: 
+    symbolsUp (float complex): apontador para a sequência de bits mapeados após upsampling.
+*/
 
 float complex *mainUpSymbols(int Nbits, int SpS) {
     // gera os bits de forma pseudo-aleatória
