@@ -147,6 +147,38 @@ int *getRandomBits(int Nbits) {
 }
 
 /*
+    Executa a filtragem FIR e compensa o atraso do filtro.
+Input: 
+    x (float complex): sinal a ser convoluído.
+    h (float complex): coeficientes do filtro.
+    length_x (int): comprimento do sinal x.
+    length_h (int): comprimento do sinal h
+Output: 
+    y (float complex): sinal filtrado.
+*/
+
+float complex *firFilter(float complex* x, float complex* h, int length_x, int length_h) {
+    // Define o tamanho do sinal de saída
+    int size = length_x > length_h ? length_x : length_h;
+    float complex *y = (float complex*)malloc(size * sizeof(float complex));
+
+    // Calcula o índice de deslocamento para a convolução "same"
+    int shift = (length_h - 1) / 2;
+
+    for(int n = 0; n < size; n++) {
+        // Inicializa o filtro com zeros
+        y[n] = 0.0 + 0.0*I;
+        for(int k = 0; k < length_x; k++) {
+            if((n - k + shift) >= 0 && (n - k + shift) < length_h) {
+                y[n] += x[k] * h[n - k + shift];
+            }
+        }
+    }
+    return y;
+}
+
+
+/*
     Função responsável pela simulação da geração de bits
     modulação, normalização e upsampling.
 Input: 
@@ -165,7 +197,12 @@ float complex *mainUpSymbols(int Nbits, int SpS) {
     float complex *symbTxNorm = pnorm(symbTx, Nbits/2);
     // upsampling
     float complex *symbolsUp = upsample(symbTxNorm, Nbits/2, SpS);
+
     return symbolsUp;
+}
+
+int main(){
+
 }
 
 
