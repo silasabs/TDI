@@ -158,14 +158,11 @@ Output:
 */
 
 float complex *firFilter(float complex* x, float complex* h, int length_x, int length_h) {
-    // Define o tamanho do sinal de saída
-    int size = length_x > length_h ? length_x : length_h;
-    float complex *y = (float complex*)malloc(size * sizeof(float complex));
-
+    float complex *y = (float complex*)malloc(length_x * sizeof(float complex));
     // Calcula o índice de deslocamento para a convolução "same"
     int shift = (length_h - 1) / 2;
 
-    for(int n = 0; n < size; n++) {
+    for(int n = 0; n < length_x; n++) {
         // Inicializa o filtro com zeros
         y[n] = 0.0 + 0.0*I;
         for(int k = 0; k < length_x; k++) {
@@ -197,7 +194,6 @@ float complex *mainUpSymbols(int Nbits, int SpS) {
     float complex *symbTxNorm = pnorm(symbTx, Nbits/2);
     // upsampling
     float complex *symbolsUp = upsample(symbTxNorm, Nbits/2, SpS);
-
     return symbolsUp;
 }
 
