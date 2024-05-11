@@ -102,6 +102,27 @@ float complex *upsample(float complex* signal, int length, int factor) {
 }
 
 /*
+    Reduz a taxa de amostragem do sinal.
+Input: 
+    signal (float complex): sinal de entrada para decimação.
+    length (int): comprimento do sinal.
+    factor (int): fator de downsampling.
+Output: 
+    signalDown (float complex): apontador para um sinal decimado.
+*/
+
+float complex *downsample(float complex* signal, int length, int factor) {
+    int newLength = length / factor;
+    float complex *signalDown = (float complex*)malloc(newLength * sizeof(float complex));
+    
+    for(int i = 0; i < newLength; i++) {
+        signalDown[i] = signal[i * factor];
+    }
+    
+    return signalDown;
+}
+
+/*
     Normaliza a potência média de cada componente de nums.
 Input: 
     nums (float complex): fasores da constelação.
