@@ -174,7 +174,6 @@ float complex *firFilter(float complex* x, float complex* h, int length_x, int l
     return y;
 }
 
-
 /*
     Função responsável pela simulação da geração de bits
     modulação, normalização e upsampling.
@@ -196,11 +195,6 @@ float complex *mainUpSymbols(int Nbits, int SpS) {
     float complex *symbolsUp = upsample(symbTxNorm, Nbits/2, SpS);
     return symbolsUp;
 }
-
-int main(){
-
-}
-
 
 // int main(){
 //     // Vetor de bits de exemplo
