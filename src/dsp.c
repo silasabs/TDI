@@ -174,6 +174,14 @@ float complex *firFilter(float complex* x, float complex* h, int length_x, int l
     return y;
 }
 
+
+float complex* matchedFilter(float complex* x, float complex* h, int length_x, int length_h){
+    float complex *sigRx = (float complex*)malloc(length_x * sizeof(float complex));
+    sigRx = firFilter(x, h, length_x, length_h);
+    sigRx = pnorm(sigRx, length_x);
+    return sigRx;
+}
+
 /*
     Função responsável pela simulação da geração de bits
     modulação, normalização e upsampling.
