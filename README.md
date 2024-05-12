@@ -1,4 +1,4 @@
-# 
+# Projeto final da disciplina de TDI
 
 Abaixo encontra-se o fluxo da simulação baseada em código C para uma transmissão digital utilizando 4-QAM. A demodulação e realizada utilizando o critério de decisão ótima para o caso em que os símbolos enviados pelo transmissor são equiprováveis (*critério de máxima verossimilhança*).
 
