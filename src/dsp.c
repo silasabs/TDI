@@ -4,6 +4,21 @@
 #include <time.h>
 #include <complex.h>
 
+float **complex2float(float complex *arr, int length){
+    // Aloca espaço para a matriz de partes reais e imaginárias
+    float **separated_nums = (float **)malloc(2*length * sizeof(float));
+
+    separated_nums[0] = (float *)malloc(length * sizeof(float)); // Parte real
+    separated_nums[1] = (float *)malloc(length * sizeof(float)); // Parte imaginária
+
+    // Preenche a matriz com as partes reais e imaginárias
+    for(int i = 0; i < length; i++) {
+        separated_nums[0][i] = crealf(arr[i]); 
+        separated_nums[1][i] = cimagf(arr[i]); 
+    }
+    return separated_nums;
+}
+
 // Define os símbolos da constelação 4QAM
 const float complex QAM4_symbols[4] = {
     1.0 + 1.0*I, // 01
@@ -42,21 +57,6 @@ float complex *qam4Mapper(int *bits, int length) {
         }
     }
     return symbols;
-}
-
-float **complex2float(float complex *arr, int length){
-    // Aloca espaço para a matriz de partes reais e imaginárias
-    float **separated_nums = (float **)malloc(2*length * sizeof(float));
-
-    separated_nums[0] = (float *)malloc(length * sizeof(float)); // Parte real
-    separated_nums[1] = (float *)malloc(length * sizeof(float)); // Parte imaginária
-
-    // Preenche a matriz com as partes reais e imaginárias
-    for(int i = 0; i < length; i++) {
-        separated_nums[0][i] = crealf(arr[i]); 
-        separated_nums[1][i] = cimagf(arr[i]); 
-    }
-    return separated_nums;
 }
 
 /*
@@ -204,7 +204,7 @@ float complex* matchedFilter(float complex* x, float complex* h, int length_x, i
 }
 
 /*
-    Função responsável pela simulação da geração de bits
+    Função responsável pela simulação da geração de bits,
     modulação, normalização e upsampling.
 Input: 
     SpS (int): amostras por símbolo.
@@ -225,100 +225,65 @@ float complex *mainUpSymbols(int Nbits, int SpS) {
     return symbolsUp;
 }
 
-// int main(){
-//     // Vetor de bits de exemplo
-//     int Nbits = 17*log2(4);
-//     int SpS   = 16;
-//     // Obtendo os bits aleatórios
-//     int *Bits = getRandomBits(Nbits);
-    
-//     for (int i = 0; i < Nbits; i++) {
-//         printf("%d", Bits[i]);
-//     }
-//     printf("\n");
+/*
+    Retorna os índices dos valores mínimos.
+Input: 
+    array (float): vetor |r-sm|**2.
+    length (int): comprimento do array
+Output: 
+    minIndex (int): índice do símbolo da constelação com a menor métrica de distância.
+*/
 
-//     // Mapeia os bits para os símbolos da constelação 4QAM
-//     float complex *symbTx = qam4Mapper(Bits, Nbits);
+int argmin(float *array, int length) {
+    if (length <= 0) {
+        // Se o comprimento for inválido, retorne -1
+        return -1;
+    }
 
-//     // Imprime os símbolos mapeados
-//     printf("Símbolos mapeados para a constelação 4QAM:\n");
-//     for (int i = 0; i < Nbits/2; i++) {
-//        printf("%.1f + %.1fi\n", crealf(symbTx[i]), cimagf(symbTx[i]));
-//     }
-    
-//     // normaliza os simbolos mapeados para energia unitária
-//     float complex *symbTxNorm = pnorm(symbTx, Nbits/2);
+    int minIndex = 0;
+    float minValue = array[0];
 
-//     printf("Símbolos Normalizados:\n");
-//     for (int i = 0; i < Nbits/2; i++) {
-//        printf("%.4f + %.4fi\n", crealf(symbTxNorm[i]), cimagf(symbTxNorm[i]));
-//     }
+    for (int i = 1; i < length; i++) {
+        if (array[i] < minValue) {
+            // Se o elemento atual for menor que o valor mínimo atual,
+            // atualize o índice mínimo e o valor mínimo
+            minIndex = i;
+            minValue = array[i];
+        }
+    }
 
-//     // Realiza o Upsampling
-//     float complex *symbolsUp = upsample(symbTxNorm, Nbits/2, SpS);
+    return minIndex;
+}
 
-//     printf("Após Upsampling:\n");
-//     for (int i = 0; i < Nbits/2*SpS; i++) {
-//        printf("%.4f + %.4fi\n", crealf(symbolsUp[i]), cimagf(symbolsUp[i]));
-//     }
+/*
+    Execute a detecção de símbolos usando a regra ML (Máxima Verossimilhança)
+    - Maximum Likelihood rule
+Input: 
+    r (float complex): sinal recebido.
+    constSymb (float complex): os símbolos da constelação.
+    length_constSymb (int) comprimento da matriz de símbolos.
+    length_r (int) comprimento do sinal recebido.
+Output: 
+    decided (float complex): os símbolos detectados.
+*/
 
-//     return 0;
-// }
+float complex* MLdetector(float complex* r, float complex* constSymb, int length_constSymb, int length_r){
 
-// testa pnorm e arrays de 2D
-// int main() {
-//     int size = 4; 
+    float complex *decided = (float complex*)malloc(length_r * sizeof(float complex));
+    // aloca a matriz de indexação para os símbolos
+    int *indDec = (int*)malloc(length_r * sizeof(int));
+    // matriz de valores |r-sm|**2, para m = 1,2,...,M
+    float *distMetric = (float*)malloc(length_constSymb * sizeof(float));
 
-//     float complex *nums = (float complex *)malloc(size * sizeof(float complex));
-    
-//     // Inicializa o vetor de números complexos (apenas para teste)
-//     for(int i = 0; i < size; i++) {
-//         nums[i] = i + 1 + I * (i + 2);
-//     }
-
-//     // Normaliza os números complexos
-//     float complex *normalized_nums = pnorm(nums, size);
-
-//     // Converte os números complexos normalizados para um vetor de partes reais e imaginárias
-//     float **float_nums = complex2float(normalized_nums, size);
-    
-//     // Imprime os resultados
-//     printf("Parte Real Normalizada:\n");
-//     for(int i = 0; i < size; i++) {
-//         printf("%f ", float_nums[0][i]);
-//     }
-//     printf("\nParte Imaginária Normalizada:\n");
-//     for(int i = 0; i < size; i++) {
-//         printf("%f ", float_nums[1][i]);
-//     }
-
-//     // Libera a memória alocada
-//     free(nums);
-//     free(normalized_nums);
-//     free(float_nums);
-    
-//     return 0;
-// }
-
-// testa codigo gray
-// int main(){
-//     int Nbits = 11;
-
-//     // Obtendo os bits aleatórios
-//     int *binary = getRandomBits(Nbits);
-    
-//     for (int i = 0; i < Nbits; i++) {
-//         printf("%d", binary[i]);
-//     }
-//     printf("\n");
-//     // Chamando a função para converter para código Gray
-//     int *graybin = grayMapping(binary, Nbits);
-//     for (int i = 0; i < Nbits; i++) {
-//         printf("%d", graybin[i]);
-//     }
-//     printf("\n");
-//     // Liberando a memória alocada para os bits
-//     free(binary);
-
-//     return 0;
-// }
+    for(int ri = 0; ri < length_r; ri++){
+        for(int index = 0; index < length_constSymb; index++){
+            // calcula |r-sm|**2, para m = 1,2,...,M 
+            distMetric[index] = pow(cabsf(r[ri] - constSymb[index]), 2);
+        }
+        // encontre o símbolo da constelação com a menor métrica de distância.
+        indDec[ri] = argmin(distMetric, length_constSymb);
+        // tome a decisão em favor do símbolo com a menor métrica
+        decided[ri] = constSymb[indDec[ri]];
+    }
+    return decided;
+}
