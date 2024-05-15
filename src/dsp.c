@@ -197,6 +197,16 @@ float complex *firFilter(float complex* x, float complex* h, int length_x, int l
     return y;
 }
 
+/*  Autor: Silas João Bezerra Soares.
+    Executa a filtragem FIR e normaliza o sinal filtrado.
+Input: 
+    x (float complex): sinal a ser convoluído.
+    h (float complex): coeficientes do filtro.
+    length_x (int): comprimento do sinal x.
+    length_h (int): comprimento do sinal h
+Output: 
+    y (float complex): sinal filtrado e normalizado.
+*/
 
 float complex* matchedFilter(float complex* x, float complex* h, int length_x, int length_h){
     float complex *sigRx = (float complex*)malloc(length_x * sizeof(float complex));
