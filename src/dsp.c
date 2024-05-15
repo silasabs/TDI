@@ -344,6 +344,32 @@ float complex *mainUpSymbols(int Nbits, int SpS) {
 }
 
 /*  Autor: Silas João Bezerra Soares.
+    Função responsável pela simulação da geração de bits,
+    modulação, normalização e upsampling.
+Input: 
+    SpS (int): amostras por símbolo.
+    Nbits (int): comprimento do bitstream
+Output: 
+    symbolsUp (float complex): apontador para a sequência de bits mapeados após upsampling.
+*/
+
+float complex *mainTx(int Nbits, int SpS, int N, float alpha, float Ts) {
+    // gera os bits de forma pseudo-aleatória
+    int *Bits = getRandomBits(Nbits);
+    // mapeia os bits para os símbolos da constelação 4-QAM
+    float complex *symbTx = qam4Mapper(Bits, Nbits);
+    // normaliza os simbolos mapeados
+    float complex *symbTxNorm = pnorm(symbTx, Nbits/2);
+    // upsampling
+    float complex *symbolsUp = upsample(symbTxNorm, Nbits/2, SpS);
+    // gera um formato de pulso RC (cosseno levantado)
+    float complex *pulse = pulseShape(SpS, N, alpha, Ts);
+    // filtro formatador de pulso
+    float complex *sigTx = firFilter(symbolsUp, pulse, Nbits/2, N);
+    return sigTx;
+}
+
+/*  Autor: Silas João Bezerra Soares.
     Retorna os índices dos valores mínimos.
 Input: 
     array (float): vetor |r-sm|**2.
