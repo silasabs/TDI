@@ -20,6 +20,108 @@ float **complex2float(float complex *arr, int length){
     return separated_nums;
 }
 
+float complex abs_max(float complex *vetor, int N){
+    float abs_max = fabs(vetor[0]);
+    for (int i=1; i<N; i++){
+        if (fabs(vetor[i])> abs_max)
+            abs_max = fabs(vetor[i]);
+    }
+    return abs_max;
+}
+
+/* 
+    Autor: Moisés Oliveira
+    Retorna o valor da função sinc com argumento x.
+Input: 
+    x (float): Argumento.
+Output: 
+     Sinc (float): Valor da função sinc cujo argumento é x.
+*/
+
+float sinc(float x){
+    return sin(x*pi)/(x*pi);
+}
+
+/*
+    Autor: Moisés Oliveira
+    Gera um vetor cujos elementos são igualmente espaçados.
+Input: 
+    start (float): Primeiro elemento do vetor.
+    stop (float): último elemento do vetor.
+Output: 
+    arr (array): Apontador para intervalos igualmente espaçados. 
+*/
+
+float* linspace(float start, float stop, int num) {
+    float *arr = (float*)malloc(num * sizeof(float));
+    float step = (stop - start) / (num - 1);
+    for (int i = 0; i < num; i++) {
+        arr[i] = start + i * step;
+    }
+    return arr;
+}
+
+/*
+    Autor: Moisés Oliveira
+    Retorna os coeficientes do filtro RC (Raised Cosine);
+Input:
+    t (float): Apontador para um vetor de tempo.
+    length_t (int): comprimento do vetor de tempo.
+    alpha (float): parâmetro roll-off do pulso cosseno levantado.
+    Ts (float): Período de sinalização.
+Output: 
+    coeffs (float): Apontador para os coeficientes do filtro.
+*/
+
+float complex *rcfiltertaps(float *t,int length_t, float alpha, float Ts){
+    float complex *coeffs = (float complex*)malloc(length_t * sizeof(float complex));
+    for (int i=0; i<length_t; i++){
+        if (abs(t[i]) == Ts/(2*alpha)){
+            coeffs[i] = pi/(4*Ts)*sinc(1/(2*alpha));
+        }
+        else{
+            coeffs[i] = 1/Ts*sinc(t[i]/Ts)*cos(alpha*pi*t[i]/Ts)/(1-4*pow(alpha, 2)*pow(t[i],2)/pow(Ts,2));
+        }
+    }
+    return coeffs;
+}
+
+/*
+    Autor: Moisés Oliveira
+    Gera os coeficientes normalizados do filtro formatador de pulso.
+Input:
+    SpS (int): Amostars por símbolo.
+    length_t (int): comprimento do vetor de tempo.
+    alpha (float): parâmetro roll-off do pulso cosseno levantado.
+    Ts (float): Período de sinalização.
+Output: 
+    filter_coeffs (float): Apontador para os coeficientes do filtro.
+*/
+
+float complex *pulseshape(int SpS, int N, float alpha , float Ts){
+    float *t;
+    float fa = (1/Ts)*SpS;
+    float complex *filter_coeffs = (float complex*)malloc(N * sizeof(float complex));
+    t = linspace(-N/2*1/fa, N/2*1/fa, N);
+    filter_coeffs = rcfiltertaps(t, N, alpha, Ts);
+    
+    float sum_square = 0;
+    for (int i = 0;i<N;i++){
+        sum_square = pow(filter_coeffs[i], 2) + sum_square;
+    }
+    for (int i = 0; i<N; i++){
+        filter_coeffs[i] = filter_coeffs[i] / sqrt(sum_square);
+    }
+
+    float max = abs_max(filter_coeffs, N);
+    
+    for (int i = 0; i<N; i++){
+        filter_coeffs[i] = filter_coeffs[i] /max;
+    }
+    
+    return filter_coeffs;
+}
+
 // Autor: Silas João Bezerra Soares.
 // Define os símbolos da constelação 4QAM
 const float complex QAM4_symbols[4] = {
