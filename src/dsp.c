@@ -4,6 +4,8 @@
 #include <time.h>
 #include <complex.h>
 
+#define pi 3.14159265359
+
 // Autor: Silas João Bezerra Soares.
 float **complex2float(float complex *arr, int length){
     // Aloca espaço para a matriz de partes reais e imaginárias
@@ -22,8 +24,8 @@ float **complex2float(float complex *arr, int length){
 
 float complex abs_max(float complex *vetor, int N){
     float abs_max = fabs(vetor[0]);
-    for (int i=1; i<N; i++){
-        if (fabs(vetor[i])> abs_max)
+    for (int i = 1; i < N; i++){
+        if (fabs(vetor[i]) > abs_max)
             abs_max = fabs(vetor[i]);
     }
     return abs_max;
@@ -39,7 +41,7 @@ Output:
 */
 
 float sinc(float x){
-    return sin(x*pi)/(x*pi);
+    return sin(x * pi) / (x * pi);
 }
 
 /*
@@ -73,9 +75,9 @@ Output:
     coeffs (float): Apontador para os coeficientes do filtro.
 */
 
-float complex *rcfiltertaps(float *t,int length_t, float alpha, float Ts){
+float complex *rcFilterTaps(float *t,int length_t, float alpha, float Ts){
     float complex *coeffs = (float complex*)malloc(length_t * sizeof(float complex));
-    for (int i=0; i<length_t; i++){
+    for (int i=0; i < length_t; i++){
         if (abs(t[i]) == Ts/(2*alpha)){
             coeffs[i] = pi/(4*Ts)*sinc(1/(2*alpha));
         }
@@ -98,24 +100,26 @@ Output:
     filter_coeffs (float): Apontador para os coeficientes do filtro.
 */
 
-float complex *pulseshape(int SpS, int N, float alpha , float Ts){
+float complex *pulseShape(int SpS, int N, float alpha , float Ts){
     float *t;
     float fa = (1/Ts)*SpS;
+
     float complex *filter_coeffs = (float complex*)malloc(N * sizeof(float complex));
+    
     t = linspace(-N/2*1/fa, N/2*1/fa, N);
-    filter_coeffs = rcfiltertaps(t, N, alpha, Ts);
+    filter_coeffs = rcFilterTaps(t, N, alpha, Ts);
     
     float sum_square = 0;
-    for (int i = 0;i<N;i++){
+    for (int i = 0;i < N;i++){
         sum_square = pow(filter_coeffs[i], 2) + sum_square;
     }
-    for (int i = 0; i<N; i++){
+    for (int i = 0; i < N; i++){
         filter_coeffs[i] = filter_coeffs[i] / sqrt(sum_square);
     }
 
     float max = abs_max(filter_coeffs, N);
     
-    for (int i = 0; i<N; i++){
+    for (int i = 0; i < N; i++){
         filter_coeffs[i] = filter_coeffs[i] /max;
     }
     
