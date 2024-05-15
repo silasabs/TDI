@@ -4,6 +4,7 @@
 #include <time.h>
 #include <complex.h>
 
+// Autor: Silas João Bezerra Soares.
 float **complex2float(float complex *arr, int length){
     // Aloca espaço para a matriz de partes reais e imaginárias
     float **separated_nums = (float **)malloc(2*length * sizeof(float));
@@ -19,6 +20,7 @@ float **complex2float(float complex *arr, int length){
     return separated_nums;
 }
 
+// Autor: Silas João Bezerra Soares.
 // Define os símbolos da constelação 4QAM
 const float complex QAM4_symbols[4] = {
     1.0 + 1.0*I, // 01
@@ -27,7 +29,7 @@ const float complex QAM4_symbols[4] = {
    -1.0 - 1.0*I  // 10
 };
 
-/*
+/*  Autor: Silas João Bezerra Soares.
     Mapeia uma sequência de bits para símbolos da constelação 4-QAM.
 Input: 
     bits (int): sequência de bits pseudo-aleatória.
@@ -59,7 +61,7 @@ float complex *qam4Mapper(int *bits, int length) {
     return symbols;
 }
 
-/*
+/*  Autor: Silas João Bezerra Soares.
     Leva uma sequência de bits aleatória para código gray.
 Input: 
     bits (int): sequência de bits pseudo-aleatória.
@@ -79,7 +81,7 @@ int *grayMapping(int bits[], int length){
     return gray;
 }
 
-/*
+/*  Autor: Silas João Bezerra Soares.
     Aumente a resolução de um sinal inserindo zeros entre as amostras.
 Input: 
     signal (float complex): sinal de entrada para aumentar a resolução.
@@ -101,7 +103,7 @@ float complex *upsample(float complex* signal, int length, int factor) {
     return signalUp;
 }
 
-/*
+/*  Autor: Silas João Bezerra Soares.
     Reduz a taxa de amostragem do sinal.
 Input: 
     signal (float complex): sinal de entrada para decimação.
@@ -122,7 +124,7 @@ float complex *downsample(float complex* signal, int length, int factor) {
     return signalDown;
 }
 
-/*
+/*  Autor: Silas João Bezerra Soares.
     Normaliza a potência média de cada componente de nums.
 Input: 
     nums (float complex): fasores da constelação.
@@ -146,7 +148,7 @@ float complex *pnorm(float complex* nums, int size) {
     return normalized_nums;
 }
 
-/*
+/*  Autor: Silas João Bezerra Soares.
     Implementa a geração de uma sequência de bits pseudo-aleatórios 
     que chegam ao transmissor.
 Input: 
@@ -167,7 +169,7 @@ int *getRandomBits(int Nbits) {
     return bits;
 }
 
-/*
+/*  Autor: Silas João Bezerra Soares.
     Executa a filtragem FIR e compensa o atraso do filtro.
 Input: 
     x (float complex): sinal a ser convoluído.
@@ -203,7 +205,7 @@ float complex* matchedFilter(float complex* x, float complex* h, int length_x, i
     return sigRx;
 }
 
-/*
+/*  Autor: Silas João Bezerra Soares.
     Função responsável pela simulação da geração de bits,
     modulação, normalização e upsampling.
 Input: 
@@ -225,7 +227,7 @@ float complex *mainUpSymbols(int Nbits, int SpS) {
     return symbolsUp;
 }
 
-/*
+/*  Autor: Silas João Bezerra Soares.
     Retorna os índices dos valores mínimos.
 Input: 
     array (float): vetor |r-sm|**2.
@@ -255,7 +257,7 @@ int argmin(float *array, int length) {
     return minIndex;
 }
 
-/*
+/*  Autor: Silas João Bezerra Soares.
     Execute a detecção de símbolos usando a regra ML (Máxima Verossimilhança)
     - Maximum Likelihood rule
 Input: 
