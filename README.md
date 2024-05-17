@@ -7,3 +7,8 @@ Abaixo encontra-se o fluxo da simulação baseada em código C para uma transmis
 <p align="center">
 <img src=https://i.postimg.cc/g0TfM56t/Screenshot-from-2024-05-12-15-43-53.png>
 </p>
+
+Para obter uma DLL compartilhada a partir do GCC faça:
+```
+$ gcc -shared -o dsp.so dsp.c
+```
