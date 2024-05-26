@@ -343,17 +343,17 @@ float complex *mainUpSymbols(int Nbits, int SpS) {
     return symbolsUp;
 }
 
-//Autor: Silas João Bezerra Soares.
-float complex* mainRx(float complex* x, float complex* h, int length_x, int length_h, float complex* constSymb){
-    float complex *sigRx = (float complex*)malloc(length_x * sizeof(float complex));
-    // filtro casado
-    sigRx = firFilter(x, h, length_x, length_h);
-    sigRx = pnorm(sigRx, length_x);
-    // demodulação
-    float complex *r = downsample(sigRx, length_x, SpS);
-    float complex *decided = MLdetector(r, constSymb, length_constSymb, 4, length_x);
-    return sigRx;
-}
+// //Autor: Silas João Bezerra Soares.
+// float complex* mainRx(float complex* x, float complex* h, int SpS, int length_x, int length_h, float complex* constSymb){
+//     float complex *sigRx = (float complex*)malloc(length_x * sizeof(float complex));
+//     // filtro casado
+//     float complex* sigRx = firFilter(x, h, length_x, length_h);
+//     float complex* sigRx = pnorm(sigRx, length_x);
+//     // demodulação
+//     //float complex *r = downsample(sigRx, length_x, SpS);
+//     //float complex *decided = MLdetector(r, constSymb, length_constSymb, 4, length_x);
+//     return sigRx;
+// }
 
 /*  Autor: Silas João Bezerra Soares.
     Função responsável pela simulação da geração de bits,
@@ -377,7 +377,8 @@ float complex *mainTx(int Nbits, int SpS, int N, float alpha, float Ts) {
     // gera um formato de pulso RC (cosseno levantado)
     float complex *pulse = pulseShape(SpS, N, alpha, Ts);
     // filtro formatador de pulso
-    float complex *sigTx = firFilter(symbolsUp, pulse, Nbits/2, N);
+    float complex *sigTx = firFilter(symbolsUp, pulse, Nbits/2*SpS, N);
+    // retorna o sinal em banda base
     return sigTx;
 }
 
