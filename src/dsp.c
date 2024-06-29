@@ -4,9 +4,19 @@
 #include <time.h>
 #include <complex.h>
 
-#define pi 3.14159265359
+#define PI 3.14159265359
 
-// Autor: Silas João Bezerra Soares.
+/**
+ * @brief Converte matrizes complexas em matrizes de duas 
+ *        dimensões de valor real e imaginário.
+ * 
+ * @param arr: matriz de números complexos.
+ * @param length: comprimento da matriz.
+ * @return float**: apontador duplo para uma matriz de representação real e imaginária. 
+ *
+ * Autor: Silas João Bezerra Soares.
+ */
+
 float **complex2float(float complex *arr, int length){
     // Aloca espaço para a matriz de partes reais e imaginárias
     float **separated_nums = (float **)malloc(2*length * sizeof(float));
@@ -15,7 +25,7 @@ float **complex2float(float complex *arr, int length){
     separated_nums[1] = (float *)malloc(length * sizeof(float)); // Parte imaginária
 
     // Preenche a matriz com as partes reais e imaginárias
-    for(int i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++) {
         separated_nums[0][i] = crealf(arr[i]); 
         separated_nums[1][i] = cimagf(arr[i]); 
     }
@@ -41,7 +51,7 @@ Output:
 */
 
 float sinc(float x){
-    return sin(x * pi) / (x * pi);
+    return sin(x * PI) / (x * PI);
 }
 
 /*
@@ -77,12 +87,12 @@ Output:
 
 float complex *rcFilterTaps(float *t,int length_t, float alpha, float Ts){
     float complex *coeffs = (float complex*)malloc(length_t * sizeof(float complex));
-    for (int i=0; i < length_t; i++){
-        if (abs(t[i]) == Ts/(2*alpha)){
-            coeffs[i] = pi/(4*Ts)*sinc(1/(2*alpha));
+    for (int i=0; i < length_t; i++) {
+        if (abs(t[i]) == Ts/(2*alpha)) {
+            coeffs[i] = PI / (4*Ts) * sinc(1 / (2*alpha));
         }
-        else{
-            coeffs[i] = 1/Ts*sinc(t[i]/Ts)*cos(alpha*pi*t[i]/Ts)/(1-4*pow(alpha, 2)*pow(t[i],2)/pow(Ts,2));
+        else {
+            coeffs[i] = 1/Ts*sinc(t[i]/Ts)*cos(alpha*PI*t[i]/Ts)/(1-4*pow(alpha, 2)*pow(t[i],2)/pow(Ts,2));
         }
     }
     return coeffs;
@@ -110,24 +120,27 @@ float complex *pulseShape(int SpS, int N, float alpha , float Ts){
     filter_coeffs = rcFilterTaps(t, N, alpha, Ts);
     
     float sum_square = 0;
-    for (int i = 0;i < N;i++){
+    for (int i = 0;i < N;i++) {
         sum_square = pow(filter_coeffs[i], 2) + sum_square;
     }
-    for (int i = 0; i < N; i++){
+    for (int i = 0; i < N; i++) {
         filter_coeffs[i] = filter_coeffs[i] / sqrt(sum_square);
     }
 
     float max = abs_max(filter_coeffs, N);
     
-    for (int i = 0; i < N; i++){
+    for (int i = 0; i < N; i++) {
         filter_coeffs[i] = filter_coeffs[i] /max;
     }
     
     return filter_coeffs;
 }
 
-// Autor: Silas João Bezerra Soares.
-// Define os símbolos da constelação 4QAM
+/**
+ * @brief Define os símbolos da constelação 4QAM
+ * Autor: Silas João Bezerra Soares.
+ */
+
 const float complex QAM4_symbols[4] = {
     1.0 + 1.0*I, // 01
     1.0 - 1.0*I, // 11
@@ -135,14 +148,15 @@ const float complex QAM4_symbols[4] = {
    -1.0 - 1.0*I  // 10
 };
 
-/*  Autor: Silas João Bezerra Soares.
-    Mapeia uma sequência de bits para símbolos da constelação 4-QAM.
-Input: 
-    bits (int): sequência de bits pseudo-aleatória.
-    length (int): comprimento do array.
-Output: 
-    symbols (float complex): apontador para um vetor de símbolos mapeados.
-*/
+/**
+ * @brief Mapeia uma sequência de bits para símbolos da constelação 4-QAM.
+ * 
+ * @param bits: sequência de bits pseudo-aleatória.
+ * @param length: comprimento da sequência de bits.
+ * @return float*: apontador para um vetor de símbolos mapeados.
+ *
+ * Autor: Silas João Bezerra Soares.
+ */
 
 float complex *qam4Mapper(int *bits, int length) {
     
@@ -167,135 +181,141 @@ float complex *qam4Mapper(int *bits, int length) {
     return symbols;
 }
 
-/*  Autor: Silas João Bezerra Soares.
-    Leva uma sequência de bits aleatória para código gray.
-Input: 
-    bits (int): sequência de bits pseudo-aleatória.
-    length (int): comprimento do array.
-Output: 
-    gray (int): apontador para uma sequência mapeada em código gray.
-*/
+/**
+ * @brief Leva uma sequência de bits aleatória para código gray.
+ * 
+ * @param bits: sequência de bits pseudo-aleatória.
+ * @param length: comprimento do array.
+ * @return int*: apontador para uma sequência mapeada em código gray. 
+ *
+ * Autor: Silas João Bezerra Soares.
+ */
 
-int *grayMapping(int bits[], int length){
+int *grayMapPIng(int bits[], int length){
     int *gray = (int *)malloc(length * sizeof(int));
     // o primeiro bit e inalterado.
     gray[0] = bits[0];
     // obtém a sequência em código gray
-    for(int i = 1; i < length; i++){
+    for (int i = 1; i < length; i++) {
         gray[i] = bits[i-1] ^ bits[i];
     }
     return gray;
 }
 
-/*  Autor: Silas João Bezerra Soares.
-    Aumente a resolução de um sinal inserindo zeros entre as amostras.
-Input: 
-    signal (float complex): sinal de entrada para aumentar a resolução.
-    length (int): comprimento do sinal.
-    factor (int): fator de upsampling. O sinal será aumentado inserindo
+/**
+ * @brief Aumente a resolução de um sinal inserindo zeros entre as amostras.
+ * 
+ * @param signal: sinal de entrada. 
+ * @param length: comprimento do sinal. 
+ * @param factor: fator de upsampling. O sinal será aumentado inserindo
                   "factor - 1" zeros entre cada amostra original.
-Output: 
-    signalUp (float complex): apontador para um sinal ampliado com zeros inseridos entre as amostras.
-*/
+ * @return float*: apontador para um sinal ampliado com zeros inseridos entre as amostras.
+ *
+ * Autor: Silas João Bezerra Soares.
+ */
 
 float complex *upsample(float complex* signal, int length, int factor) {
     float complex *signalUp = (float complex*)malloc(length * factor * sizeof(float complex));
-    for(int i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++) {
         signalUp[i*factor] = signal[i];
-        for(int j = 1; j < factor; j++) {
+        for (int j = 1; j < factor; j++) {
             signalUp[i*factor+j] = 0.0 + 0.0*I;
         }
     }
     return signalUp;
 }
 
-/*  Autor: Silas João Bezerra Soares.
-    Reduz a taxa de amostragem do sinal.
-Input: 
-    signal (float complex): sinal de entrada para decimação.
-    length (int): comprimento do sinal.
-    factor (int): fator de downsampling.
-Output: 
-    signalDown (float complex): apontador para um sinal decimado.
-*/
+/**
+ * @brief Reduz a taxa de amostragem do sinal.
+ * 
+ * @param signal: sinal de entrada. 
+ * @param length: comprimento do sinal.
+ * @param factor: fator de downsampling.
+ * @return float*: apontador para um sinal decimado.
+ *
+ * Autor: Silas João Bezerra Soares.
+ */
 
 float complex *downsample(float complex* signal, int length, int factor) {
     int newLength = length / factor;
     float complex *signalDown = (float complex*)malloc(newLength * sizeof(float complex));
     
-    for(int i = 0; i < newLength; i++) {
+    for (int i = 0; i < newLength; i++) {
         signalDown[i] = signal[i * factor];
     }
     
     return signalDown;
 }
 
-/*  Autor: Silas João Bezerra Soares.
-    Normaliza a potência média de cada componente de nums.
-Input: 
-    nums (float complex): fasores da constelação.
-    size (int): comprimento do sinal
-Output: 
-    normalized_nums (float complex): sinal com cada componente normalizado em potência.
-*/
+/**
+ * @brief Normaliza a potência média de cada componente de nums.
+ * 
+ * @param nums: fasores da constelação 
+ * @param size: comprimento do sinal 
+ * @return float*: sinal com cada componente normalizado em potência.
+ *
+ * Autor: Silas João Bezerra Soares.
+ */
 
 float complex *pnorm(float complex* nums, int size) {
     float complex sum = 0;
     // matriz de constelação normalizada
     float complex *normalized_nums = (float complex*)malloc(size * sizeof(float complex));
     // calcular a média dos fasores
-    for(int i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++) {
         sum += nums[i]*conj(nums[i]);
     }
     // normaliza a constelação
-    for(int i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++) {
         normalized_nums[i] = nums[i]/sqrt(creal(sum/size));
     }
     return normalized_nums;
 }
 
-/*  Autor: Silas João Bezerra Soares.
-    Implementa a geração de uma sequência de bits pseudo-aleatórios 
-    que chegam ao transmissor.
-Input: 
-    M (int): ordem do esquema de modulação.
-    Nbits (int): comprimento do bitstream
-Output: 
-    bits (int): sequência de bits pseudo-aleatórios.
-*/
+
+/**
+ * @brief Implementa a geração de uma sequência de bits pseudo-aleatórios 
+ *        que chegam ao transmissor.
+ * 
+ * @param Nbits: comprimento do bitstream
+ * @return int*: sequência de bits pseudo-aleatórios.
+ *
+ * Autor: Silas João Bezerra Soares.
+ */
 
 int *getRandomBits(int Nbits) {
     int *bits = (int *)malloc(Nbits * sizeof(int));
     // initialize the random number generator
     srand(time(NULL));
 
-    for(int indBits = 0; indBits < Nbits; indBits++){
+    for (int indBits = 0; indBits < Nbits; indBits++) {
         bits[indBits] = rand() % 2;
     }
     return bits;
 }
 
-/*  Autor: Silas João Bezerra Soares.
-    Executa a filtragem FIR e compensa o atraso do filtro.
-Input: 
-    x (float complex): sinal a ser convoluído.
-    h (float complex): coeficientes do filtro.
-    length_x (int): comprimento do sinal x.
-    length_h (int): comprimento do sinal h
-Output: 
-    y (float complex): sinal filtrado.
-*/
-
+/**
+ * @brief Executa a filtragem FIR e compensa o atraso do filtro.
+ * 
+ * @param x: sinal a ser convoluído.
+ * @param h: coeficientes do filtro.
+ * @param length_x: comprimento do sinal x.
+ * @param length_h: comprimento do sinal h.
+ * @return float*: sinal filtrado.
+ *
+ * Autor: Silas João Bezerra Soares.
+ */
+ 
 float complex *firFilter(float complex* x, float complex* h, int length_x, int length_h) {
     float complex *y = (float complex*)malloc(length_x * sizeof(float complex));
     // Calcula o índice de deslocamento para a convolução "same"
     int shift = (length_h - 1) / 2;
 
-    for(int n = 0; n < length_x; n++) {
+    for (int n = 0; n < length_x; n++) {
         // Inicializa o filtro com zeros
         y[n] = 0.0 + 0.0*I;
-        for(int k = 0; k < length_x; k++) {
-            if((n - k + shift) >= 0 && (n - k + shift) < length_h) {
+        for (int k = 0; k < length_x; k++) {
+            if ((n - k + shift) >= 0 && (n - k + shift) < length_h) {
                 y[n] += x[k] * h[n - k + shift];
             }
         }
@@ -303,16 +323,17 @@ float complex *firFilter(float complex* x, float complex* h, int length_x, int l
     return y;
 }
 
-/*  Autor: Silas João Bezerra Soares.
-    Executa a filtragem FIR e normaliza o sinal filtrado.
-Input: 
-    x (float complex): sinal a ser convoluído.
-    h (float complex): coeficientes do filtro.
-    length_x (int): comprimento do sinal x.
-    length_h (int): comprimento do sinal h
-Output: 
-    y (float complex): sinal filtrado e normalizado.
-*/
+/**
+ * @brief Aplica a filtragem correspondente.
+ * 
+ * @param x: sinal a ser convoluído.
+ * @param h: coeficientes do filtro.
+ * @param length_x: comprimento do sinal x.
+ * @param length_h: comprimento da resposta ao impulso h
+ * @return float*: sinal filtrado e normalizado.
+ *
+ * Autor: Silas João Bezerra Soares.
+ */
 
 float complex* matchedFilter(float complex* x, float complex* h, int length_x, int length_h){
     float complex *sigRx = (float complex*)malloc(length_x * sizeof(float complex));
@@ -321,15 +342,16 @@ float complex* matchedFilter(float complex* x, float complex* h, int length_x, i
     return sigRx;
 }
 
-/*  Autor: Silas João Bezerra Soares.
-    Função responsável pela simulação da geração de bits,
-    modulação, normalização e upsampling.
-Input: 
-    SpS (int): amostras por símbolo.
-    Nbits (int): comprimento do bitstream
-Output: 
-    symbolsUp (float complex): apontador para a sequência de bits mapeados após upsampling.
-*/
+/**
+ * @brief Função responsável pela simulação da geração de bits,
+ *        modulação, normalização e upsampling.
+ * 
+ * @param Nbits: comprimento do bitstream
+ * @param SpS: amostras por símbolo.
+ * @return float*: apontador para a sequência de bits mapeados após upsampling.
+ *
+ * Autor: Silas João Bezerra Soares.
+ */
 
 float complex *mainUpSymbols(int Nbits, int SpS) {
     // gera os bits de forma pseudo-aleatória
@@ -343,7 +365,7 @@ float complex *mainUpSymbols(int Nbits, int SpS) {
     return symbolsUp;
 }
 
-// //Autor: Silas João Bezerra Soares.
+// Autor: Silas João Bezerra Soares.
 // float complex* mainRx(float complex* x, float complex* h, int SpS, int length_x, int length_h, float complex* constSymb){
 //     float complex *sigRx = (float complex*)malloc(length_x * sizeof(float complex));
 //     // filtro casado
@@ -382,14 +404,15 @@ float complex *mainTx(int Nbits, int SpS, int N, float alpha, float Ts) {
     return sigTx;
 }
 
-/*  Autor: Silas João Bezerra Soares.
-    Retorna os índices dos valores mínimos.
-Input: 
-    array (float): vetor |r-sm|**2.
-    length (int): comprimento do array
-Output: 
-    minIndex (int): índice do símbolo da constelação com a menor métrica de distância.
-*/
+/**
+ * @brief Retorna os índices dos valores mínimos.
+ * 
+ * @param array vetor: |r-sm|**2.
+ * @param length: comprimento do array
+ * @return int: índice do símbolo da constelação com a menor métrica de distância.
+ *
+ * Autor: Silas João Bezerra Soares.
+ */
 
 int argmin(float *array, int length) {
     if (length <= 0) {
@@ -412,17 +435,18 @@ int argmin(float *array, int length) {
     return minIndex;
 }
 
-/*  Autor: Silas João Bezerra Soares.
-    Execute a detecção de símbolos usando a regra ML (Máxima Verossimilhança)
-    - Maximum Likelihood rule
-Input: 
-    r (float complex): sinal recebido.
-    constSymb (float complex): os símbolos da constelação.
-    length_constSymb (int) comprimento da matriz de símbolos.
-    length_r (int) comprimento do sinal recebido.
-Output: 
-    decided (float complex): os símbolos detectados.
-*/
+/**
+ * @brief Execute a detecção de símbolos usando a regra ML (Máxima Verossimilhança)
+ *        - Maximum Likelihood rule
+ * 
+ * @param r: sinal recebido.
+ * @param constSymb: os símbolos da constelação.
+ * @param length_constSymb: comprimento da matriz de símbolos.
+ * @param length_r: comprimento do sinal recebido.
+ * @return float*: os símbolos detectados.
+ *
+ * Autor: Silas João Bezerra Soares.
+ */
 
 float complex* MLdetector(float complex* r, float complex* constSymb, int length_constSymb, int length_r){
 
@@ -432,8 +456,8 @@ float complex* MLdetector(float complex* r, float complex* constSymb, int length
     // matriz de valores |r-sm|**2, para m = 1,2,...,M
     float *distMetric = (float*)malloc(length_constSymb * sizeof(float));
 
-    for(int ri = 0; ri < length_r; ri++){
-        for(int index = 0; index < length_constSymb; index++){
+    for (int ri = 0; ri < length_r; ri++) {
+        for (int index = 0; index < length_constSymb; index++) {
             // calcula |r-sm|**2, para m = 1,2,...,M 
             distMetric[index] = pow(cabsf(r[ri] - constSymb[index]), 2);
         }
