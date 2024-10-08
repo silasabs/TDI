@@ -3,6 +3,7 @@
 #include <math.h>
 #include <time.h>
 #include <complex.h>
+#include <stdbool.h>
 
 #define PI 3.14159265359
 
@@ -50,7 +51,7 @@ Output:
      Sinc (float): Valor da função sinc cujo argumento é x.
 */
 
-float sinc(float x){
+float sinc(float x) {
     return sin(x * PI) / (x * PI);
 }
 
@@ -130,10 +131,36 @@ float complex *pulseShape(int SpS, int N, float alpha , float Ts){
     float max = abs_max(filter_coeffs, N);
     
     for (int i = 0; i < N; i++) {
-        filter_coeffs[i] = filter_coeffs[i] /max;
+        filter_coeffs[i] = filter_coeffs[i] / max;
     }
     
     return filter_coeffs;
+}
+
+float normal_random(float mu, float stddev) {
+
+    float u1 = (float)rand() / RAND_MAX;
+    float u2 = (float)rand() / RAND_MAX;
+
+    float z = sqrt(-2 * log(u1)) * cos(2 * PI * u2);  
+    return z * stddev + mu;
+}
+
+float complex* noise(int samples, float mu, float stddev) {
+    
+    float complex *noise = (float complex*)malloc(samples * sizeof(float complex));
+
+    srand(time(NULL));
+
+    for (int i = 0; i < samples; i++) {
+        
+        float real_part = normal_random(mu, stddev);
+        float imag_part = normal_random(mu, stddev);
+        
+        noise[i] = real_part + I * imag_part;
+    }
+
+    return noise;
 }
 
 /**
@@ -468,3 +495,42 @@ float complex* MLdetector(float complex* r, float complex* constSymb, int length
     }
     return decided;
 }
+
+// int main() {
+//     int length = 10;  // Tamanho do sinal
+//     float mu = 0.0;   // Média do ruído gaussiano
+//     float stddev = 0.05;  // Desvio padrão do ruído gaussiano
+
+//     // Criar um sinal exemplo (pode ser zero ou um sinal real)
+//     float complex *signal = (float complex*)malloc(length * sizeof(float complex));
+//     for (int i = 0; i < length; i++) {
+//         signal[i] = i + I * i;  // Exemplo: sinal complexo crescente
+//     }
+
+//     printf("Sinal original:\n");
+//     for (int i = 0; i < length; i++) {
+//         printf("signal[%d] = %f + %fi\n", i, creal(signal[i]), cimag(signal[i]));
+//     }
+
+//     // Chamar a função noise() para adicionar ruído ao sinal
+//     signal = noise(signal, length, mu, stddev, true);
+
+//     printf("\nSinal com ruído adicionado:\n");
+//     for (int i = 0; i < length; i++) {
+//         printf("signal[%d] = %f + %fi\n", i, creal(signal[i]), cimag(signal[i]));
+//     }
+
+//     // Gerar ruído gaussiano sem adicionar ao sinal (apenas ruído)
+//     float complex *generated_noise = noise(signal, length, mu, stddev, false);
+
+//     printf("\nRuído gerado (sem adicionar ao sinal):\n");
+//     for (int i = 0; i < length; i++) {
+//         printf("noise[%d] = %f + %fi\n", i, creal(generated_noise[i]), cimag(generated_noise[i]));
+//     }
+
+//     // Liberar memória
+//     free(signal);
+//     free(generated_noise);
+
+//     return 0;
+// }
