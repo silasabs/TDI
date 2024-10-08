@@ -191,7 +191,7 @@ float complex *qam4Mapper(int *bits, int length) {
  * Autor: Silas João Bezerra Soares.
  */
 
-int *grayMapPIng(int bits[], int length){
+int *grayMapping(int bits[], int length){
     int *gray = (int *)malloc(length * sizeof(int));
     // o primeiro bit e inalterado.
     gray[0] = bits[0];
