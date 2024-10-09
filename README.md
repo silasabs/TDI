@@ -15,9 +15,7 @@ Abaixo encontra-se o fluxo da simulação baseada em código C para uma transmis
 - Filtragem FIR / Correspondente
 - Detector de Máxima Verossimilhança
 
-O projeto utiliza o ctypes para chamar funções escritas em linguagens de baixo nível, como o C, diretamente a partir do Python.
-
-Para obter uma DLL a partir do GCC faça:
+O projeto utiliza o ctypes para chamar funções escritas em linguagens de baixo nível, como o C, diretamente a partir do Python. Para obter uma DLL a partir do GCC:
 
 Linux Distros
 ```
